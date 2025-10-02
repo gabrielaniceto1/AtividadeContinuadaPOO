@@ -9,11 +9,16 @@ import org.junit.jupiter.api.Test;
 import br.edu.cs.poo.ac.ordem.entidades.Cliente;
 import br.edu.cs.poo.ac.ordem.entidades.Contato;
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
+import br.edu.cs.poo.ac.ordem.entidades.Equipamento;
 import br.edu.cs.poo.ac.ordem.entidades.Notebook;
 import br.edu.cs.poo.ac.ordem.entidades.OrdemServico;
 import br.edu.cs.poo.ac.ordem.entidades.PrecoBase;
 
-public class TesteEntidades {	
+public class TesteEntidades extends TesteAbstrato {
+	
+	public TesteEntidades() {
+		super(Cliente.class);
+	}
 
 	private static final LocalDate DATA1 = LocalDate.parse("2000-01-01");
 	private static final LocalDateTime DATA_HORA1 = LocalDateTime.parse("2020-02-01T10:20:30");	
@@ -35,24 +40,28 @@ public class TesteEntidades {
 		Assertions.assertEquals(5, idade2);
 	}
 	@Test
-	public void testeNumeroOrdemServico() {
-		OrdemServico ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
-				NOTE, null, DATA_HORA1, 10, 300.0);
-		String numero = ordem.getNumero();
-		Assertions.assertEquals("NO20200201102000012345678900", numero);
-		ordem = new OrdemServico(CLI2, PrecoBase.MANUTENCAO_NORMAL, 
+	public void testeNumeroOrdemServicoCNPJ() {
+		OrdemServico ordem = new OrdemServico(CLI2, PrecoBase.MANUTENCAO_NORMAL, 
 				NOTE, null, DATA_HORA1, 12, 500.0);
-		numero = ordem.getNumero();
+		String numero = ordem.getNumero();
 		Assertions.assertEquals("NO20200201102023456789011234", numero);
-		ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
-				null, DESK, DATA_HORA1, 13, 700.0);
-		numero = ordem.getNumero();
-		Assertions.assertEquals("DE20200201102000012345678900", numero);
 		ordem = new OrdemServico(CLI2, PrecoBase.MANUTENCAO_NORMAL, 
 				null, DESK, DATA_HORA1, 14, 900.0);
 		numero = ordem.getNumero();
 		Assertions.assertEquals("DE20200201102023456789011234", numero);
 	}
+	@Test
+	public void testeNumeroOrdemServicoCPF() {
+		OrdemServico ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
+				NOTE, null, DATA_HORA1, 10, 300.0);
+		String numero = ordem.getNumero();
+		Assertions.assertEquals("NO20200201102000012345678900", numero);
+		ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
+				null, DESK, DATA_HORA1, 13, 700.0);
+		numero = ordem.getNumero();
+		Assertions.assertEquals("DE20200201102000012345678900", numero);
+	}
+
 	@Test
 	public void testeDataEstimadaEntregaOrdemServico() {
 		OrdemServico ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
@@ -60,4 +69,13 @@ public class TesteEntidades {
 		LocalDate dataEstimada = ordem.getDataEstimadaEntrega();
 		dataEstimada.equals(LocalDate.parse("2000-02-06"));
 	}
+	@Test
+	public void testeHerancaDesktop() {
+		Assertions.assertTrue(herdaDe(Desktop.class, Equipamento.class));
+	}
+	@Test
+	public void testeHerancaNotebook() {
+		Assertions.assertTrue(herdaDe(Notebook.class, Equipamento.class));
+	}
+
 }

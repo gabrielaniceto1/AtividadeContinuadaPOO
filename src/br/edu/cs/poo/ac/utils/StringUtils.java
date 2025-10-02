@@ -24,6 +24,17 @@ public class StringUtils {
 		
 		return false;
 	}
+	public static boolean tamanhoMenor(String str, int tamanho) {
+		if(tamanho < 0) return false;
+		if(str == null) {
+			return tamanho > 0 ? true : false;
+		}
+		if(str.length() < tamanho){
+			return true;
+		}
+		
+		return false;
+	}
 	public static boolean emailValido(String email) {
 		if(email == null) return false;
 		if(email.indexOf('@') < 0 || email.indexOf('.') < 0) {

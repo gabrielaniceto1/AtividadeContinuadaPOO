@@ -15,8 +15,7 @@ import br.edu.cs.poo.ac.utils.ListaString;
 public class TesteClienteMediator extends TesteAbstrato {
 	private static final String CPF_CNPJ_INEXISTENTE = "CPF/CNPJ inexistente";
 	private static final String CNPJ_VALIDO = "26055259000123";
-	private static final String OUTRO_CPF_VALIDO = "61232801046";
-	private static final String STR_VAZIA = "";
+	private static final String OUTRO_CPF_VALIDO = "61232801046";	
 	private static final String CPF_VALIDO = "07237135023";
 	private static final String CELULAR_NAO_INFORMADO_E_INDICADOR_DE_ZAP_ATIVO = "Celular não informado e indicador de zap ativo";
 	private static final String CELULAR_E_E_MAIL_NAO_FORAM_INFORMADOS = "Celular e e-mail não foram informados";
@@ -31,20 +30,6 @@ public class TesteClienteMediator extends TesteAbstrato {
 		super(Cliente.class);
 	}
 	
-	private void assertionsResultadoMediatorNaoValidado(ResultadoMediator res) {
-		Assertions.assertNotNull(res);
-		Assertions.assertFalse(res.isValidado());
-		Assertions.assertFalse(res.isOperacaoRealizada());
-		Assertions.assertNotNull(res.getMensagensErro());
-		Assertions.assertTrue(res.getMensagensErro().tamanho() > 0);
-	}
-	private void assertionsResultadoMediatorValidado(ResultadoMediator res) {
-		Assertions.assertNotNull(res);
-		Assertions.assertTrue(res.isValidado());
-		Assertions.assertFalse(res.isOperacaoRealizada());
-		Assertions.assertNotNull(res.getMensagensErro());
-		Assertions.assertEquals(0, res.getMensagensErro().tamanho());	
-	}
 	private void assertionsResultadoTudoNuloBranco(ResultadoMediator res) {
 		ListaString mensagens = res.getMensagensErro();
 		Assertions.assertEquals(4, mensagens.tamanho());
@@ -313,4 +298,10 @@ public class TesteClienteMediator extends TesteAbstrato {
 		cliente = new Cliente(null, null, new Contato("xxx@yyy.edu.us", "   ", true), null);
 		assertionsContato(conversor, cliente, CELULAR_NAO_INFORMADO_E_INDICADOR_DE_ZAP_ATIVO);						
 	}
+	
+	@Test
+	public void testeSingleton() {
+		Assertions.assertTrue(temUmSoConstrutorPrivado(ClienteMediator.class));
+	}
+	
 }

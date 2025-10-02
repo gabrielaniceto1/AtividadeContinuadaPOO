@@ -43,4 +43,15 @@ public class TesteStringUtils {
 		Assertions.assertFalse(telefoneValido("     "));
 		Assertions.assertFalse(telefoneValido(null));
 	}
+	@Test 
+	public void testTamanhoMenor() {
+		Assertions.assertFalse(tamanhoMenor("SSS", -1));
+		Assertions.assertFalse(tamanhoMenor("", -1));
+		Assertions.assertFalse(tamanhoMenor(null, -1));
+		Assertions.assertTrue(tamanhoMenor("", 2));
+		Assertions.assertTrue(tamanhoMenor(null, 1));
+		Assertions.assertFalse(tamanhoMenor("EEEEE", 4));
+		Assertions.assertFalse(tamanhoMenor("EEE", 3));
+		Assertions.assertTrue(tamanhoMenor("EEEEEE", 8));
+	}
 }
