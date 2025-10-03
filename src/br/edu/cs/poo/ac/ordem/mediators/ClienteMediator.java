@@ -130,7 +130,7 @@ public class ClienteMediator {
 		//contato2
 		if(contatoCliente != null) {
 				String email = contatoCliente.getEmail();
-				String celular = contatoCliente.getCalular();
+				String celular = contatoCliente.getCelular();
 				boolean eZap = contatoCliente.isEhZap();
 				if(StringUtils.estaVazia(email) == true && StringUtils.estaVazia(celular) == true) {
 					erros.adicionar("Celular e e-mail não foram informados");

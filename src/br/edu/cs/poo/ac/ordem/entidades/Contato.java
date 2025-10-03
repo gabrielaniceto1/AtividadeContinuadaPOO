@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 public class Contato implements Serializable{
 	private String email;
-	private String calular;
+	private String celular;
 	private boolean ehZap;
 	
-	public Contato(String email, String calular, boolean ehZap) {
+	public Contato(String email, String celular, boolean ehZap) {
 		super();
 		this.email = email;
-		this.calular = calular;
+		this.celular = celular;
 		this.ehZap = ehZap;
 	}
 
@@ -22,12 +22,12 @@ public class Contato implements Serializable{
 		this.email = email;
 	}
 
-	public String getCalular() {
-		return calular;
+	public String getCelular() {
+		return celular;
 	}
 
 	public void setCalular(String calular) {
-		this.calular = calular;
+		this.celular = calular;
 	}
 
 	public boolean isEhZap() {
