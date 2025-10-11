@@ -6,6 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/WB_SWT"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/eclipse/eclipse/java-2025-06/eclipse/lombok.jar"/>
 	<classpathentry kind="lib" path="C:/Users/gabri/Downloads/PersistenciaObjetos.jar"/>
