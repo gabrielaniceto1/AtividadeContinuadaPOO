@@ -119,10 +119,14 @@ public class ClienteGUI extends JFrame {
         txtCelular.addFocusListener(new FocusAdapter() {
         	@Override
         	public void focusLost(FocusEvent e) {
-        		String celular = txtCelular.getText().replaceAll("\\D", "");
+        		String celular = txtCelular.getText();
+        		if(celular.length() == 13 && celular.charAt(0) == '(' && celular.charAt(3) == ')') {
+        			return;
+        		}
         		if(celular.length() == 11) {
-        			txtCelular.setText("("+ celular.substring(0,2)
-        					+ ")" + txtCelular.getText().substring(2));
+        			String celular1 = celular.replaceAll("\\D", "");
+        			txtCelular.setText("("+ celular1.substring(0,2)
+        					+ ")" + celular1.substring(2));
         		}
         	}
         });
