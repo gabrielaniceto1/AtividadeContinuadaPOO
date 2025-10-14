@@ -431,34 +431,4 @@ public class EquipamentoGUI extends JFrame {
         txtValor.setFocusLostBehavior(JFormattedTextField.COMMIT);
         txtValor.setText("0,00");
     }
-
-    private boolean validarObrigatorios() {
-        if (cbTipo.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(this, "Selecione o tipo de equipamento.", "Atenção", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        if (txtSerial.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Informe o Serial.", "Atenção", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        try {
-            txtValor.commitEdit();
-            BigDecimal v = getValorBigDecimal();
-            if (v.compareTo(BigDecimal.ZERO) < 0) {
-                JOptionPane.showMessageDialog(this, "O valor estimado deve ser ≥ 0.", "Atenção", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Valor estimado inválido.", "Atenção", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        return true;
-    }
-
-    private BigDecimal getValorBigDecimal() {
-        Object val = txtValor.getValue();
-        if (val instanceof BigDecimal) return (BigDecimal) val;
-        if (val == null) return BigDecimal.ZERO;
-        return new BigDecimal(val.toString().replace(".", "").replace(",", "."));
-    }
 }
