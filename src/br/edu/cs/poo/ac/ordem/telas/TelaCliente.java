@@ -115,7 +115,44 @@ public class TelaCliente extends JFrame {
 
         txtCpfcnpj = new JTextField();
         txtCpfcnpj.setBounds(20, 64, 221, 21);
+
+        ((javax.swing.text.AbstractDocument) txtCpfcnpj.getDocument()).setDocumentFilter(
+            new javax.swing.text.DocumentFilter() {
+                private String soDigitos(String s){ return s.replaceAll("\\D",""); }
+
+                @Override
+                public void insertString(FilterBypass fb, int off, String str, javax.swing.text.AttributeSet a)
+                        throws javax.swing.text.BadLocationException {
+                    if (str == null) return;
+                    String atual = fb.getDocument().getText(0, fb.getDocument().getLength());
+                    String novo = soDigitos(atual.substring(0, off) + str + atual.substring(off));
+                    if (novo.length() <= 14) {
+                        super.insertString(fb, off, str.replaceAll("\\D",""), a);
+                    } else {
+                        int pode = 14 - soDigitos(atual).length();
+                        if (pode > 0) super.insertString(fb, off, soDigitos(str).substring(0, pode), a);
+                    }
+                }
+
+                @Override
+                public void replace(FilterBypass fb, int off, int len, String str, javax.swing.text.AttributeSet a)
+                        throws javax.swing.text.BadLocationException {
+                    String s = (str == null) ? "" : str;
+                    String atual = fb.getDocument().getText(0, fb.getDocument().getLength());
+                    String aposRemocao = atual.substring(0, off) + atual.substring(off + len);
+                    String novo = soDigitos(aposRemocao + s);
+                    if (novo.length() <= 14) {
+                        super.replace(fb, off, len, s.replaceAll("\\D",""), a);
+                    } else {
+                        int pode = 14 - soDigitos(aposRemocao).length();
+                        if (pode > 0) super.replace(fb, off, len, soDigitos(s).substring(0, pode), a);
+                    }
+                }
+            }
+        );
+
         getContentPane().add(txtCpfcnpj);
+
         txtCpfcnpj.addFocusListener(new FocusAdapter() {
         	@Override
         	public void focusLost(FocusEvent e) {
@@ -131,6 +168,7 @@ public class TelaCliente extends JFrame {
         	    }
         	}
         });
+
         txtCpfcnpj.setToolTipText("Digite o cpf/cnpj do cliente");
 
         txtEmail = new JTextField();
