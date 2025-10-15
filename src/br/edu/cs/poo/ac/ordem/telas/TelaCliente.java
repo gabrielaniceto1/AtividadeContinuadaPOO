@@ -156,17 +156,31 @@ public class TelaCliente extends JFrame {
         txtCpfcnpj.addFocusListener(new FocusAdapter() {
         	@Override
         	public void focusLost(FocusEvent e) {
-        		String cpfCnpj = txtCpfcnpj.getText().replaceAll("\\D", "");
+        	    String cpfCnpj = txtCpfcnpj.getText().replaceAll("\\D", "");
         	    if (cpfCnpj.isEmpty()) { txtCpfcnpj.setText(""); return; }
+
+        	    javax.swing.text.AbstractDocument doc =
+        	        (javax.swing.text.AbstractDocument) txtCpfcnpj.getDocument();
+        	    javax.swing.text.DocumentFilter filtro = doc.getDocumentFilter();
+
         	    if (cpfCnpj.length() == 11) {
-        	      txtCpfcnpj.setText(cpfCnpj.substring(0,3)+"."+cpfCnpj.substring(3,6)+"."+cpfCnpj.substring(6,9)+"-"+cpfCnpj.substring(9));
+        	        String fmt = cpfCnpj.substring(0,3)+"."+cpfCnpj.substring(3,6)+"."+cpfCnpj.substring(6,9)+"-"+cpfCnpj.substring(9);
+        	        doc.setDocumentFilter(null);
+        	        txtCpfcnpj.setText(fmt);
+        	        doc.setDocumentFilter(filtro);
         	    } else if (cpfCnpj.length() == 14) {
-        	      txtCpfcnpj.setText(cpfCnpj.substring(0,2)+"."+cpfCnpj.substring(2,5)+"."+cpfCnpj.substring(5,8)+"/"+
-        	    		  cpfCnpj.substring(8,12)+"-"+cpfCnpj.substring(12));
+        	        String fmt = cpfCnpj.substring(0,2)+"."+cpfCnpj.substring(2,5)+"."+cpfCnpj.substring(5,8)+"/"+
+        	                     cpfCnpj.substring(8,12)+"-"+cpfCnpj.substring(12);
+        	        doc.setDocumentFilter(null);
+        	        txtCpfcnpj.setText(fmt);
+        	        doc.setDocumentFilter(filtro);
         	    } else {
-        	      txtCpfcnpj.setText(cpfCnpj);
+        	        doc.setDocumentFilter(null);
+        	        txtCpfcnpj.setText(cpfCnpj);
+        	        doc.setDocumentFilter(filtro);
         	    }
         	}
+
         });
 
         txtCpfcnpj.setToolTipText("Digite o cpf/cnpj do cliente");
