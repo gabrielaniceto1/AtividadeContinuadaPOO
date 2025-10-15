@@ -48,7 +48,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	@Test
 	public void testeValidarEquipamento03() {
 		wrapTesteValidarEquipamento03(mediator::validar);
-	}	
+	}
 	@Test
 	public void testeValidarDesktop01() {
 		wrapTesteValidarDesktop01(mediator::validarDesktop);
@@ -91,10 +91,10 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	public void testeIncluirNotebookNaoSucesso() {
 		wrapTesteValidarNotebook01(mediator::incluirNotebook);
 		wrapTesteValidarNotebook02(mediator::incluirNotebook);
-		wrapTesteValidarNotebook03(mediator::incluirNotebook);		
+		wrapTesteValidarNotebook03(mediator::incluirNotebook);
 		Notebook note = new Notebook("NO999", "NON OMINE QUOD LICET HONESTUM EST", false, 88.0, false);
 		String id = note.getIdTipo() + note.getSerial();
-		cadastro.incluir(note, id);		
+		cadastro.incluir(note, id);
 		ResultadoMediator res = mediator.incluirNotebook(note);
 		Assertions.assertNotNull(res);
 		Assertions.assertTrue(res.isValidado());
@@ -102,7 +102,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertNotNull(res.getMensagensErro());
 		Assertions.assertEquals(1, res.getMensagensErro().tamanho());
 		Assertions.assertEquals("Serial do notebook já existente", res.getMensagensErro().buscar(0));
-		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Notebook.class));		
+		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Notebook.class));
 	}
 	@Test
 	public void testeIncluirDesktopSucesso() {
@@ -122,10 +122,10 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	public void testeIncluirDesktopNaoSucesso() {
 		wrapTesteValidarDesktop01(mediator::incluirDesktop);
 		wrapTesteValidarDesktop02(mediator::incluirDesktop);
-		wrapTesteValidarDesktop03(mediator::incluirDesktop);		
+		wrapTesteValidarDesktop03(mediator::incluirDesktop);
 		Desktop des = new Desktop("DEXXXa1", "DON T LET THE SUN GO DOWN ON ME", false, 11.0, false);
 		String id = des.getIdTipo() + des.getSerial();
-		cadastroDesktop.incluir(des, id);		
+		cadastroDesktop.incluir(des, id);
 		ResultadoMediator res = mediator.incluirDesktop(des);
 		Assertions.assertNotNull(res);
 		Assertions.assertTrue(res.isValidado());
@@ -133,10 +133,10 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertNotNull(res.getMensagensErro());
 		Assertions.assertEquals(1, res.getMensagensErro().tamanho());
 		Assertions.assertEquals("Serial do desktop já existente", res.getMensagensErro().buscar(0));
-		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Desktop.class));		
+		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Desktop.class));
 	}
-	
-	
+
+
 	@Test
 	public void testeAlterarNotebookSucesso() {
 		String serial = "NO666";
@@ -158,7 +158,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	public void testeAlterarNotebookNaoSucesso() {
 		wrapTesteValidarNotebook01(mediator::incluirNotebook);
 		wrapTesteValidarNotebook02(mediator::incluirNotebook);
-		wrapTesteValidarNotebook03(mediator::incluirNotebook);			
+		wrapTesteValidarNotebook03(mediator::incluirNotebook);
 		String serial = "NO666";
 		Notebook note = new Notebook(serial, "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", false, 3.0, false);
 		String id = note.getIdTipo() + serial;
@@ -171,12 +171,12 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertNotNull(res.getMensagensErro());
 		Assertions.assertEquals(1, res.getMensagensErro().tamanho());
 		Assertions.assertEquals(SERIAL_DO_NOTEBOOK_NAO_EXISTENTE, res.getMensagensErro().buscar(0));
-		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Notebook.class));		
+		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Notebook.class));
 	}
 	@Test
 	public void testeAlterarDesktopSucesso() {
 		String serial = "DE111";
-		Desktop des = new Desktop(serial, "I LIVE ON THE SECOND FLOOR", false, 3.0, false);		
+		Desktop des = new Desktop(serial, "I LIVE ON THE SECOND FLOOR", false, 3.0, false);
 		String id = des.getIdTipo() + serial;
 		cadastroDesktop.incluir(des, id);
 		Desktop desAlt = new Desktop(serial, "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG 66543", true, 98098.0, true);
@@ -194,10 +194,10 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	public void testeAlterarDesktopNaoSucesso() {
 		wrapTesteValidarDesktop01(mediator::incluirDesktop);
 		wrapTesteValidarDesktop02(mediator::incluirDesktop);
-		wrapTesteValidarDesktop03(mediator::incluirDesktop);			
+		wrapTesteValidarDesktop03(mediator::incluirDesktop);
 		Desktop des = new Desktop("DEXXXa1", "DON T LET THE SUN GO DOWN ON ME", false, 11.0, false);
 		String id = des.getIdTipo() + des.getSerial();
-		cadastroDesktop.incluir(des, id);		
+		cadastroDesktop.incluir(des, id);
 		Desktop desAlt = new Desktop("DEXXX22", "DON T LET THE SUN GO DOWN ON ME", false, 11.0, false);
 		ResultadoMediator res = mediator.alterarDesktop(desAlt);
 		Assertions.assertNotNull(res);
@@ -206,7 +206,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertNotNull(res.getMensagensErro());
 		Assertions.assertEquals(1, res.getMensagensErro().tamanho());
 		Assertions.assertEquals("Serial do desktop não existente", res.getMensagensErro().buscar(0));
-		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Desktop.class));		
+		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Desktop.class));
 	}
 
 
@@ -226,7 +226,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertTrue(res.isValidado());
 		Assertions.assertFalse(res.isOperacaoRealizada());
 		Assertions.assertNotNull(res.getMensagensErro());
-		Assertions.assertEquals(1, res.getMensagensErro().tamanho());		
+		Assertions.assertEquals(1, res.getMensagensErro().tamanho());
 		Assertions.assertEquals(1, obterQuantidadeRegistros());
 		Assertions.assertEquals(SERIAL_DO_NOTEBOOK_NAO_EXISTENTE, res.getMensagensErro().buscar(0));
 	}
@@ -242,8 +242,8 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertTrue(res.isValidado());
 		Assertions.assertTrue(res.isOperacaoRealizada());
 		Assertions.assertNotNull(res.getMensagensErro());
-		Assertions.assertEquals(0, res.getMensagensErro().tamanho());		
-		Assertions.assertEquals(0, obterQuantidadeRegistros());		
+		Assertions.assertEquals(0, res.getMensagensErro().tamanho());
+		Assertions.assertEquals(0, obterQuantidadeRegistros());
 	}
 
 	@Test
@@ -262,7 +262,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertTrue(res.isValidado());
 		Assertions.assertFalse(res.isOperacaoRealizada());
 		Assertions.assertNotNull(res.getMensagensErro());
-		Assertions.assertEquals(1, res.getMensagensErro().tamanho());		
+		Assertions.assertEquals(1, res.getMensagensErro().tamanho());
 		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Desktop.class));
 		Assertions.assertEquals(SERIAL_DO_DESKTOP_NAO_EXISTENTE, res.getMensagensErro().buscar(0));
 	}
@@ -278,14 +278,14 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertTrue(res.isValidado());
 		Assertions.assertTrue(res.isOperacaoRealizada());
 		Assertions.assertNotNull(res.getMensagensErro());
-		Assertions.assertEquals(0, res.getMensagensErro().tamanho());		
-		Assertions.assertEquals(0, obterQuantidadeRegistros());		
+		Assertions.assertEquals(0, res.getMensagensErro().tamanho());
+		Assertions.assertEquals(0, obterQuantidadeRegistros());
 	}
-	
+
 	@Test
 	public void testeBuscarDesktopInexistente() {
 		String serial = "NXXX112";
-		
+
 		Desktop note = new Desktop(serial, "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", false, 3.0, false);
 		String id = note.getIdTipo() + note.getSerial();
 		cadastroDesktop.incluir(note, id);
@@ -299,11 +299,11 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertNull(desBus);
 		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Desktop.class));
 	}
-	
+
 	@Test
 	public void testeBuscarNotebookInexistente() {
 		String serial = "NXXX112";
-		
+
 		Notebook note = new Notebook(serial, "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG", false, 3.0, false);
 		String id = note.getIdTipo() + note.getSerial();
 		cadastro.incluir(note, id);
@@ -325,7 +325,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Desktop desBuscado = mediator.buscarDesktop(id);
 		Assertions.assertNotNull(desBuscado);
 		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(Desktop.class));
-		Assertions.assertTrue(ComparadoraObjetosSerial.compareObjectsSerial(desBuscado, des));		
+		Assertions.assertTrue(ComparadoraObjetosSerial.compareObjectsSerial(desBuscado, des));
 	}
 	private void assertionsResultadoTudoNuloBranco(ResultadoMediator res) {
 		ListaString mensagens = res.getMensagensErro();
@@ -341,23 +341,23 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertEquals("Dados básicos do equipamento não informados", mensagens.buscar(0));
 		DadosEquipamento dadosEquip = new DadosEquipamento(null, null, false, 1.0);
 		res = conversor.apply(dadosEquip);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		assertionsResultadoTudoNuloBranco(res);
 		dadosEquip = new DadosEquipamento("                      ", " ", false, 2.0);
 		res = conversor.apply(dadosEquip);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		assertionsResultadoTudoNuloBranco(res);
 	}
 	private void wrapTesteValidarEquipamento02(Function<DadosEquipamento, ResultadoMediator> conversor) {
 		DadosEquipamento dadosEquip = new DadosEquipamento("DE12345", "A".repeat(152), false, 3.0);
 		ResultadoMediator res =  conversor.apply(dadosEquip);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		ListaString mensagens = res.getMensagensErro();
 		Assertions.assertEquals(1, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_TEM_MAIS_DE_150_CARACTERES, mensagens.buscar(0));
 		dadosEquip = new DadosEquipamento("NO12345", "ABCDEF", false, 4.0);
 		res =  conversor.apply(dadosEquip);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		mensagens = res.getMensagensErro();
 		Assertions.assertEquals(1, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_TEM_MENOS_DE_10_CARACTERES, mensagens.buscar(0));
@@ -365,7 +365,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	private void wrapTesteValidarEquipamento03(Function<DadosEquipamento, ResultadoMediator> conversor) {
 		DadosEquipamento dadosEquip = new DadosEquipamento(STR_VAZIA, null, true, 0.0);
 		ResultadoMediator res =  conversor.apply(dadosEquip);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		ListaString mensagens = res.getMensagensErro();
 		Assertions.assertEquals(3, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_NAO_INFORMADA, mensagens.buscar(0));
@@ -374,9 +374,9 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		dadosEquip = new DadosEquipamento(STR_VAZIA, "ABCDEFGHIJKL", false, -2.0);
 		res =  conversor.apply(dadosEquip);
 		mensagens = res.getMensagensErro();
-		Assertions.assertEquals(2, mensagens.tamanho());		
+		Assertions.assertEquals(2, mensagens.tamanho());
 		Assertions.assertEquals(SERIAL_NAO_INFORMADO, mensagens.buscar(0));
-		Assertions.assertEquals(VALOR_ESTIMADO_MENOR_OU_IGUAL_A_ZERO, mensagens.buscar(1));		
+		Assertions.assertEquals(VALOR_ESTIMADO_MENOR_OU_IGUAL_A_ZERO, mensagens.buscar(1));
 	}
 
 	private void wrapTesteValidarDesktop01(Function<Desktop, ResultadoMediator> conversor) {
@@ -387,23 +387,23 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertEquals("Desktop não informado", mensagens.buscar(0));
 		Desktop des = new Desktop(null, null, false, 1.0, true);
 		res = conversor.apply(des);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		assertionsResultadoTudoNuloBranco(res);
 		des = new Desktop("                        ", "  ", false, 2.0, false);
 		res = conversor.apply(des);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		assertionsResultadoTudoNuloBranco(res);
 	}
 	private void wrapTesteValidarDesktop02(Function<Desktop, ResultadoMediator> conversor) {
 		Desktop des = new Desktop("DE12345", "A".repeat(152), false, 3.0, false);
 		ResultadoMediator res =  conversor.apply(des);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		ListaString mensagens = res.getMensagensErro();
 		Assertions.assertEquals(1, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_TEM_MAIS_DE_150_CARACTERES, mensagens.buscar(0));
 		des = new Desktop("NO12345", "ABCDEF", false, 4.0, true);
 		res =  conversor.apply(des);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		mensagens = res.getMensagensErro();
 		Assertions.assertEquals(1, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_TEM_MENOS_DE_10_CARACTERES, mensagens.buscar(0));
@@ -411,7 +411,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	private void wrapTesteValidarDesktop03(Function<Desktop, ResultadoMediator> conversor) {
 		Desktop des = new Desktop(STR_VAZIA, null, true, 0.0, true);
 		ResultadoMediator res =  conversor.apply(des);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		ListaString mensagens = res.getMensagensErro();
 		Assertions.assertEquals(3, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_NAO_INFORMADA, mensagens.buscar(0));
@@ -420,11 +420,11 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		des = new Desktop(STR_VAZIA, "ABCDEFGHIJKL", false, -2.0, true);
 		res =  conversor.apply(des);
 		mensagens = res.getMensagensErro();
-		Assertions.assertEquals(2, mensagens.tamanho());		
+		Assertions.assertEquals(2, mensagens.tamanho());
 		Assertions.assertEquals(SERIAL_NAO_INFORMADO, mensagens.buscar(0));
-		Assertions.assertEquals(VALOR_ESTIMADO_MENOR_OU_IGUAL_A_ZERO, mensagens.buscar(1));		
+		Assertions.assertEquals(VALOR_ESTIMADO_MENOR_OU_IGUAL_A_ZERO, mensagens.buscar(1));
 	}
-	
+
 	private void wrapTesteValidarNotebook01(Function<Notebook, ResultadoMediator> conversor) {
 		ResultadoMediator res = mediator.validarNotebook(null);
 		assertionsResultadoMediatorNaoValidado(res);
@@ -433,23 +433,23 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		Assertions.assertEquals("Notebook não informado", mensagens.buscar(0));
 		Notebook note = new Notebook(null, null, false, 1.0, true);
 		res = conversor.apply(note);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		assertionsResultadoTudoNuloBranco(res);
 		note = new Notebook("                        ", "  ", false, 2.0, false);
 		res = conversor.apply(note);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		assertionsResultadoTudoNuloBranco(res);
 	}
 	private void wrapTesteValidarNotebook02(Function<Notebook, ResultadoMediator> conversor) {
 		Notebook note = new Notebook("DE12345", "A".repeat(152), false, 3.0, false);
 		ResultadoMediator res =  conversor.apply(note);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		ListaString mensagens = res.getMensagensErro();
 		Assertions.assertEquals(1, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_TEM_MAIS_DE_150_CARACTERES, mensagens.buscar(0));
 		note = new Notebook("NO12345", "ABCDEF", false, 4.0, true);
 		res =  conversor.apply(note);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		mensagens = res.getMensagensErro();
 		Assertions.assertEquals(1, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_TEM_MENOS_DE_10_CARACTERES, mensagens.buscar(0));
@@ -457,7 +457,7 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 	private void wrapTesteValidarNotebook03(Function<Notebook, ResultadoMediator> conversor) {
 		Notebook note = new Notebook(STR_VAZIA, null, true, 0.0, true);
 		ResultadoMediator res =  conversor.apply(note);
-		assertionsResultadoMediatorNaoValidado(res);		
+		assertionsResultadoMediatorNaoValidado(res);
 		ListaString mensagens = res.getMensagensErro();
 		Assertions.assertEquals(3, mensagens.tamanho());
 		Assertions.assertEquals(DESCRICAO_NAO_INFORMADA, mensagens.buscar(0));
@@ -466,16 +466,16 @@ public class TesteEquipamentoMediator extends TesteAbstrato {
 		note = new Notebook(STR_VAZIA, "ABCDEFGHIJKL", false, -2.0, true);
 		res =  conversor.apply(note);
 		mensagens = res.getMensagensErro();
-		Assertions.assertEquals(2, mensagens.tamanho());		
+		Assertions.assertEquals(2, mensagens.tamanho());
 		Assertions.assertEquals(SERIAL_NAO_INFORMADO, mensagens.buscar(0));
-		Assertions.assertEquals(VALOR_ESTIMADO_MENOR_OU_IGUAL_A_ZERO, mensagens.buscar(1));		
+		Assertions.assertEquals(VALOR_ESTIMADO_MENOR_OU_IGUAL_A_ZERO, mensagens.buscar(1));
 	}
 	private void assertionsExclusaoIdSerialVazio(ResultadoMediator res, Class tipo) {
 		Assertions.assertNotNull(res);
 		Assertions.assertFalse(res.isValidado());
 		Assertions.assertFalse(res.isOperacaoRealizada());
 		Assertions.assertNotNull(res.getMensagensErro());
-		Assertions.assertEquals(1, res.getMensagensErro().tamanho());		
+		Assertions.assertEquals(1, res.getMensagensErro().tamanho());
 		Assertions.assertEquals(1, obterQuantidadeRegistrosPorTipo(tipo));
 	}
 	@Test

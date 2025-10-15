@@ -1,42 +1,69 @@
 package br.edu.cs.poo.ac.ordem.gui;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.text.MaskFormatter;
-import java.beans.Beans;
-import javax.swing.JFormattedTextField;
-import javax.swing.text.DefaultFormatterFactory;
-import java.text.ParseException;
-import java.awt.event.*;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import br.edu.cs.poo.ac.ordem.daos.ClienteDAO;
-import br.edu.cs.poo.ac.ordem.entidades.Cliente;
-import br.edu.cs.poo.ac.ordem.entidades.Contato;
-import br.edu.cs.poo.ac.utils.ListaString;
-import br.edu.cs.poo.ac.utils.ResultadoValidacaoCPFCNPJ;
-import br.edu.cs.poo.ac.utils.StringUtils;
-import br.edu.cs.poo.ac.utils.ValidadorCPFCNPJ;
-import br.edu.cs.poo.ac.ordem.mediators.ClienteMediator;
-import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.beans.Beans;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.MaskFormatter;
 
-@SuppressWarnings("serial")
+import br.edu.cs.poo.ac.ordem.entidades.Cliente;
+import br.edu.cs.poo.ac.ordem.entidades.Contato;
+import br.edu.cs.poo.ac.ordem.mediators.ClienteMediator;
+import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 public class ClienteGUI extends JFrame {
 
-    private JTextField txtCpfcnpj;
+	private static final long serialVersionUID = 1L;
+
+	private enum Modo { INICIAL, NOVO, EDICAO }
+
+	private JTextField txtCpfcnpj;
     private JTextField txtNomeCompleto;
     private JTextField txtEmail;
     private JTextField txtCelular;
     private JFormattedTextField txtDataAtual;
     private JCheckBox chkWhatsapp;
 
+    private JButton btnBuscar, btnAdicionar, btnExcluir, btnAlterar;
+    private JButton btnNovo, btnCancelar, btnLimpar;
 
-    public ClienteGUI() {
-        if (!Beans.isDesignTime()) {
+    private final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(() -> {
+			try {
+				ClienteGUI frame = new ClienteGUI();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public ClienteGUI() {
+		if (!Beans.isDesignTime()) {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 SwingUtilities.updateComponentTreeUI(this);
@@ -45,7 +72,7 @@ public class ClienteGUI extends JFrame {
 
         setTitle("Registrar Cliente");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(450, 300);
+        setSize(520, 340);
         setLocationRelativeTo(null);
         getContentPane().setLayout(null);
         getContentPane().setBackground(Color.WHITE);
@@ -57,7 +84,7 @@ public class ClienteGUI extends JFrame {
 
         JLabel lblContato = new JLabel("Contato:");
         lblContato.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        lblContato.setBounds(246, 16, 80, 17);
+        lblContato.setBounds(286, 16, 80, 17);
         getContentPane().add(lblContato);
 
         JLabel lblNomeCompleto = new JLabel("Nome Completo");
@@ -69,11 +96,11 @@ public class ClienteGUI extends JFrame {
         getContentPane().add(lblCpfcnpj);
 
         JLabel lblEmail = new JLabel("E-mail");
-        lblEmail.setBounds(236, 41, 54, 17);
+        lblEmail.setBounds(276, 41, 54, 17);
         getContentPane().add(lblEmail);
 
         JLabel lblCelular = new JLabel("Celular");
-        lblCelular.setBounds(236, 96, 54, 17);
+        lblCelular.setBounds(276, 96, 54, 17);
         getContentPane().add(lblCelular);
 
         JLabel lblDataDoCadastro = new JLabel("Data do cadastro:");
@@ -83,12 +110,11 @@ public class ClienteGUI extends JFrame {
 
         txtNomeCompleto = new JTextField();
         txtNomeCompleto.setToolTipText("Digite o nome completo do cliente");
-        txtNomeCompleto.setBounds(20, 124, 171, 21);
+        txtNomeCompleto.setBounds(20, 124, 221, 21);
         getContentPane().add(txtNomeCompleto);
-        
-        
+
         txtCpfcnpj = new JTextField();
-        txtCpfcnpj.setBounds(20, 64, 171, 21);
+        txtCpfcnpj.setBounds(20, 64, 221, 21);
         getContentPane().add(txtCpfcnpj);
         txtCpfcnpj.addFocusListener(new FocusAdapter() {
         	@Override
@@ -105,38 +131,34 @@ public class ClienteGUI extends JFrame {
         	    }
         	}
         });
-        
         txtCpfcnpj.setToolTipText("Digite o cpf/cnpj do cliente");
-        txtCpfcnpj.setBounds(20, 64, 171, 21);
-        getContentPane().add(txtCpfcnpj);
 
         txtEmail = new JTextField();
         txtEmail.setToolTipText("Digite email do cliente");
-        txtEmail.setBounds(236, 64, 177, 21);
+        txtEmail.setBounds(276, 64, 207, 21);
         getContentPane().add(txtEmail);
 
         txtCelular = new JTextField();
         txtCelular.addFocusListener(new FocusAdapter() {
         	@Override
         	public void focusLost(FocusEvent e) {
-        		String celular = txtCelular.getText();
-        		if(celular.length() == 13 && celular.charAt(0) == '(' && celular.charAt(3) == ')') {
-        			return;
-        		}
-        		if(celular.length() == 11) {
-        			String celular1 = celular.replaceAll("\\D", "");
-        			txtCelular.setText("("+ celular1.substring(0,2)
-        					+ ")" + celular1.substring(2));
-        		}
+                String raw = txtCelular.getText();
+                if (raw.matches("^\\(\\d{2}\\)\\d{8,9}$")) return;
+                String digits = raw.replaceAll("\\D", "");
+                if (digits.length() == 11 || digits.length() == 10) {
+                    String dd  = digits.substring(0, 2);
+                    String num = digits.substring(2);
+                    txtCelular.setText("(" + dd + ")" + num);
+                }
         	}
         });
         txtCelular.setToolTipText("Digite o celular do cliente");
-        txtCelular.setBounds(236, 119, 176, 21);
+        txtCelular.setBounds(276, 119, 207, 21);
         getContentPane().add(txtCelular);
 
         chkWhatsapp = new JCheckBox("é WhatsApp?");
         chkWhatsapp.setBackground(Color.WHITE);
-        chkWhatsapp.setBounds(236, 146, 110, 17);
+        chkWhatsapp.setBounds(276, 146, 110, 17);
         getContentPane().add(chkWhatsapp);
 
         try {
@@ -148,134 +170,248 @@ public class ClienteGUI extends JFrame {
         txtDataAtual.setToolTipText("Data Atual");
         txtDataAtual.setBounds(20, 203, 112, 21);
         getContentPane().add(txtDataAtual);
-        
+
         if (!Beans.isDesignTime()) {
             LocalDate hoje = LocalDate.now();
-            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            txtDataAtual.setText(hoje.format(fmt));
-            
+            txtDataAtual.setText(hoje.format(FMT));
             txtDataAtual.setFocusLostBehavior(JFormattedTextField.COMMIT);
             txtDataAtual.setCaretPosition(txtDataAtual.getText().length());
         }
 
         Font btnFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 
-        JButton btnBuscar = new JButton("BUSCAR");
+        btnNovo = new JButton("NOVO");
+        btnNovo.setFont(btnFont);
+        btnNovo.setForeground(Color.BLACK);
+        btnNovo.setBounds(20, 230, 95, 30);
+        getContentPane().add(btnNovo);
+
+        btnBuscar = new JButton("BUSCAR");
         btnBuscar.setFont(btnFont);
         btnBuscar.setForeground(Color.BLACK);
-        btnBuscar.setBounds(20, 230, 105, 30);
+        btnBuscar.setBounds(120, 230, 105, 30);
         getContentPane().add(btnBuscar);
 
-        JButton btnAdicionar = new JButton("ADICIONAR");
+        btnAdicionar = new JButton("ADICIONAR");
         btnAdicionar.setFont(btnFont);
         btnAdicionar.setForeground(Color.BLACK);
-        btnAdicionar.setBounds(130, 230, 110, 30);
+        btnAdicionar.setBounds(230, 230, 120, 30);
         getContentPane().add(btnAdicionar);
 
-        JButton btnExcluir = new JButton("EXCLUIR");
-        btnExcluir.setFont(btnFont);
-        btnExcluir.setForeground(Color.BLACK);
-        btnExcluir.setBounds(245, 230, 95, 30);
-        getContentPane().add(btnExcluir);
-
-        JButton btnAlterar = new JButton("ALTERAR");
+        btnAlterar = new JButton("ALTERAR");
         btnAlterar.setFont(btnFont);
         btnAlterar.setForeground(Color.BLACK);
-        btnAlterar.setBounds(345, 230, 95, 30);
+        btnAlterar.setBounds(355, 230, 95, 30);
         getContentPane().add(btnAlterar);
 
+        btnExcluir = new JButton("EXCLUIR");
+        btnExcluir.setFont(btnFont);
+        btnExcluir.setForeground(Color.BLACK);
+        btnExcluir.setBounds(20, 265, 95, 30);
+        getContentPane().add(btnExcluir);
 
-        btnAdicionar.addActionListener(e -> {
-        	ClienteMediator addMediator = ClienteMediator.getInstancia();
-        	DateTimeFormatter FMT1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        	LocalDate addData = LocalDate.parse(txtDataAtual.getText(),FMT1);
-        	Contato addContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-        	Cliente addCliente = new Cliente(txtCpfcnpj.getText(),txtNomeCompleto.getText(),addContato,addData);
-        	ResultadoMediator addResultado = addMediator.incluir(addCliente);
-        	
-        	if(addResultado.isOperacaoRealizada() == false) {
-        		String erros = "Operação não realizada pois:";
-        		for(int i = 0; i < addResultado.getMensagensErro().listar().length; i++) {
-        			erros += "\n" + addResultado.getMensagensErro().listar()[i];
-        		}
-        		JOptionPane.showMessageDialog(this, erros,
-                        "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
-        	}
-        	else {
-        		JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!",
-                        "Resultado da Inclusão", JOptionPane.INFORMATION_MESSAGE);
-        	}
+        btnCancelar = new JButton("CANCELAR");
+        btnCancelar.setFont(btnFont);
+        btnCancelar.setForeground(Color.BLACK);
+        btnCancelar.setBounds(120, 265, 105, 30);
+        getContentPane().add(btnCancelar);
+
+        btnLimpar = new JButton("LIMPAR");
+        btnLimpar.setFont(btnFont);
+        btnLimpar.setForeground(Color.BLACK);
+        btnLimpar.setBounds(230, 265, 120, 30);
+        getContentPane().add(btnLimpar);
+
+        setModo(Modo.INICIAL);
+
+        btnNovo.addActionListener(e -> {
+            String id = txtCpfcnpj.getText().trim();
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
+                return;
+            }
+            ClienteMediator med = ClienteMediator.getInstancia();
+            Cliente existente = med.buscar(id);
+            if (existente != null) {
+                JOptionPane.showMessageDialog(this, "Cliente já existente!");
+                return;
+            }
+            limparCamposDados();
+            setModo(Modo.NOVO);
         });
+
         btnBuscar.addActionListener(e -> {
             if (Beans.isDesignTime()) return;
-            ClienteMediator busMediator = ClienteMediator.getInstancia();
-            Cliente cliente = busMediator.buscar(txtCpfcnpj.getText());
+            String id = txtCpfcnpj.getText().trim();
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "CPF/CNPJ deve ser preenchido!");
+                return;
+            }
+            ClienteMediator med = ClienteMediator.getInstancia();
+            Cliente cliente = med.buscar(id);
             if (cliente == null) {
                 JOptionPane.showMessageDialog(this, "Nenhum cliente encontrado.",
                         "Resultado da Busca", JOptionPane.WARNING_MESSAGE);
-            } else {
-                String nome = safe(cliente.getNome());
-                String cpfCnpj = safe(cliente.getCpfCnpj());
-                String idade = String.valueOf(cliente.getIdadeCadastro());
-                String email = cliente.getContato() != null ? safe(cliente.getContato().getEmail()) : "";
-                String celular = cliente.getContato() != null ? safe(cliente.getContato().getCelular()) : "";
-                String eZap = (cliente.getContato() != null && cliente.getContato().isEhZap()) ? "SIM" : "NÃO";
+                return;
+            }
+            preencherTela(cliente);
+            setModo(Modo.EDICAO);
+        });
 
-                String msg = "Nome: " + nome +
-                        "\nCPF/CNPJ: " + cpfCnpj +
-                        "\nData de cadastro: " + idade +
-                        "\nE-mail: " + email +
-                        "\nCelular: " + celular +
-                        "\nÉ WhatsApp: " + eZap;
+        btnAdicionar.addActionListener(e -> {
+        	ClienteMediator addMediator = ClienteMediator.getInstancia();
+        	try {
+                LocalDate addData = LocalDate.parse(txtDataAtual.getText(), FMT);
+                Contato addContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
+                Cliente addCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), addContato, addData);
+                ResultadoMediator addResultado = addMediator.incluir(addCliente);
 
-                JOptionPane.showMessageDialog(this, msg, "Resultado da Busca",
-                        JOptionPane.INFORMATION_MESSAGE);
+                if(!addResultado.isOperacaoRealizada()) {
+                    String erros = "Operação não realizada pois:";
+                    for(String m : addResultado.getMensagensErro().listar()) erros += "\n" + m;
+                    JOptionPane.showMessageDialog(this, erros, "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Resultado da Inclusão", JOptionPane.INFORMATION_MESSAGE);
+                    setModo(Modo.INICIAL);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Data inválida (use dd/MM/yyyy).", "Atenção", JOptionPane.WARNING_MESSAGE);
             }
         });
-        btnExcluir.addActionListener(e -> {
-        	ClienteMediator excMediator = ClienteMediator.getInstancia();
-        	String excCliente = txtCpfcnpj.getText();
-        	ResultadoMediator resExcCliente = excMediator.excluir(excCliente);
-        	
-        	if(resExcCliente.isOperacaoRealizada() == false) {
-        		String excErros = "Operação não realizada pois:";
-        		for(int i = 0; i < resExcCliente.getMensagensErro().listar().length; i++) {
-        			excErros += "\n" + resExcCliente.getMensagensErro().listar()[i];
-        		}
-        		JOptionPane.showMessageDialog(this, excErros,
-                        "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
-        	}
-        	else {
-        		JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso!", "Resultado da Exclusão",
-                        JOptionPane.INFORMATION_MESSAGE);
-        	}
-        });
+
         btnAlterar.addActionListener(e -> {
         	ClienteMediator altMediator = ClienteMediator.getInstancia();
-        	DateTimeFormatter FMT1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        	LocalDate altData = LocalDate.parse(txtDataAtual.getText(),FMT1);
-        	Contato altContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
-        	Cliente altCliente = new Cliente(txtCpfcnpj.getText(),txtNomeCompleto.getText(),altContato,altData);
-        	ResultadoMediator altResultado = altMediator.alterar(altCliente);
-        	
-        	if(altResultado.isOperacaoRealizada() == false) {
-        		String erros = "Operação não realizada pois:";
-        		for(int i = 0; i < altResultado.getMensagensErro().listar().length; i++) {
-        			erros += "\n" + altResultado.getMensagensErro().listar()[i];
-        		}
-        		JOptionPane.showMessageDialog(this, erros,
-                        "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
+        	try {
+                LocalDate altData = LocalDate.parse(txtDataAtual.getText(), FMT);
+                Contato altContato = new Contato(txtEmail.getText(), txtCelular.getText(), chkWhatsapp.isSelected());
+                Cliente altCliente = new Cliente(txtCpfcnpj.getText().trim(), txtNomeCompleto.getText(), altContato, altData);
+                ResultadoMediator altResultado = altMediator.alterar(altCliente);
+
+                if(!altResultado.isOperacaoRealizada()) {
+                    String erros = "Operação não realizada pois:";
+                    for(String m : altResultado.getMensagensErro().listar()) erros += "\n" + m;
+                    JOptionPane.showMessageDialog(this, erros, "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cadastro alterado com sucesso!", "Resultado da Alteração", JOptionPane.INFORMATION_MESSAGE);
+                    setModo(Modo.INICIAL);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Data inválida (use dd/MM/yyyy).", "Atenção", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        btnExcluir.addActionListener(e -> {
+        	ClienteMediator excMediator = ClienteMediator.getInstancia();
+        	String id = txtCpfcnpj.getText().trim();
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Informe o CPF/CNPJ para excluir.", "Atenção", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        	ResultadoMediator resExcCliente = excMediator.excluir(id);
+        	if(!resExcCliente.isOperacaoRealizada()) {
+        		String excErros = "Operação não realizada pois:";
+        		for(String m : resExcCliente.getMensagensErro().listar()) excErros += "\n" + m;
+        		JOptionPane.showMessageDialog(this, excErros, "Resultado da Exclusão", JOptionPane.WARNING_MESSAGE);
+        	} else {
+        		JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso!", "Resultado da Exclusão", JOptionPane.INFORMATION_MESSAGE);
+                setModo(Modo.INICIAL);
         	}
-        	else {
-        		JOptionPane.showMessageDialog(this, "Cadastro alterado com sucesso!",
-                        "Resultado da Alteração", JOptionPane.INFORMATION_MESSAGE);
-        	}
+        });
+
+        btnCancelar.addActionListener(e -> setModo(Modo.INICIAL));
+
+        btnLimpar.addActionListener(e -> {
+            if (txtCpfcnpj.isEnabled()) txtCpfcnpj.setText("");
+            limparCamposDados();
         });
     }
 
-    private static String safe(String s) { return s == null ? "" : s; }
+    private void setModo(Modo modo) {
+        switch (modo) {
+            case INICIAL:
+                txtCpfcnpj.setEnabled(true);
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> new ClienteGUI().setVisible(true));
+                txtNomeCompleto.setEnabled(false);
+                txtEmail.setEnabled(false);
+                txtCelular.setEnabled(false);
+                chkWhatsapp.setEnabled(false);
+                txtDataAtual.setEnabled(false);
+
+                btnNovo.setEnabled(true);
+                btnBuscar.setEnabled(true);
+
+                btnAdicionar.setEnabled(false);
+                btnAlterar.setEnabled(false);
+                btnExcluir.setEnabled(false);
+                btnCancelar.setEnabled(false);
+                btnLimpar.setEnabled(true);
+
+                txtCpfcnpj.setText("");
+                limparCamposDados();
+                txtDataAtual.setText(LocalDate.now().format(FMT));
+                break;
+
+            case NOVO:
+                txtCpfcnpj.setEnabled(false);
+
+                txtNomeCompleto.setEnabled(true);
+                txtEmail.setEnabled(true);
+                txtCelular.setEnabled(true);
+                chkWhatsapp.setEnabled(true);
+                txtDataAtual.setEnabled(true);
+
+                btnNovo.setEnabled(false);
+                btnBuscar.setEnabled(false);
+                btnAdicionar.setEnabled(true);
+                btnAlterar.setEnabled(false);
+                btnExcluir.setEnabled(false);
+                btnCancelar.setEnabled(true);
+                btnLimpar.setEnabled(true);
+                break;
+
+            case EDICAO:
+                txtCpfcnpj.setEnabled(false);
+
+                txtNomeCompleto.setEnabled(true);
+                txtEmail.setEnabled(true);
+                txtCelular.setEnabled(true);
+                chkWhatsapp.setEnabled(true);
+                txtDataAtual.setEnabled(true);
+
+                btnNovo.setEnabled(false);
+                btnBuscar.setEnabled(false);
+                btnAdicionar.setEnabled(false);
+                btnAlterar.setEnabled(true);  
+                btnExcluir.setEnabled(true);
+                btnCancelar.setEnabled(true);
+                btnLimpar.setEnabled(true);
+                break;
+        }
     }
+
+    private void limparCamposDados() {
+        txtNomeCompleto.setText("");
+        txtEmail.setText("");
+        txtCelular.setText("");
+        chkWhatsapp.setSelected(false);
+    }
+
+    private void preencherTela(Cliente cliente) {
+        txtCpfcnpj.setText(safe(cliente.getCpfCnpj()));
+        txtNomeCompleto.setText(safe(cliente.getNome()));
+        if (cliente.getContato() != null) {
+            txtEmail.setText(safe(cliente.getContato().getEmail()));
+            txtCelular.setText(safe(cliente.getContato().getCelular()));
+            chkWhatsapp.setSelected(cliente.getContato().isEhZap());
+        } else {
+            txtEmail.setText("");
+            txtCelular.setText("");
+            chkWhatsapp.setSelected(false);
+        }
+        if (txtDataAtual.getText() == null || txtDataAtual.getText().trim().isEmpty()) {
+            txtDataAtual.setText(LocalDate.now().format(FMT));
+        }
+    }
+
+	private static String safe(String s) { return s == null ? "" : s; }
 }

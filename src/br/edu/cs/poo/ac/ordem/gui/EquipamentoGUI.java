@@ -1,18 +1,5 @@
 package br.edu.cs.poo.ac.ordem.gui;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import br.edu.cs.poo.ac.utils.ListaString;
-import br.edu.cs.poo.ac.utils.StringUtils;
-import br.edu.cs.poo.ac.ordem.mediators.EquipamentoMediator;
-import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
-import br.edu.cs.poo.ac.ordem.entidades.Desktop;
-import br.edu.cs.poo.ac.ordem.entidades.Notebook;
-import br.edu.cs.poo.ac.ordem.entidades.Equipamento;
-import br.edu.cs.poo.ac.ordem.mediators.DadosEquipamento;
-import br.edu.cs.poo.ac.ordem.daos.DesktopDAO;
-import br.edu.cs.poo.ac.ordem.daos.NotebookDAO;
-
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -35,15 +22,22 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
+import br.edu.cs.poo.ac.ordem.entidades.Desktop;
+import br.edu.cs.poo.ac.ordem.entidades.Notebook;
+import br.edu.cs.poo.ac.ordem.mediators.EquipamentoMediator;
+import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
+
+//tela opicional
 public class EquipamentoGUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
+
+    private enum Modo { INICIAL, NOVO, EDICAO }
 
     private JComboBox<String> cbTipo;
     private JTextField txtSerial;
@@ -62,6 +56,8 @@ public class EquipamentoGUI extends JFrame {
     private JRadioButton rbServNao, rbServSim;
     private ButtonGroup grpServ;
 
+    private JButton btnNovo, btnBuscar, btnAdicionar, btnAlterar, btnExcluir, btnCancelar, btnLimpar;
+
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
@@ -77,7 +73,7 @@ public class EquipamentoGUI extends JFrame {
     public EquipamentoGUI() {
         setTitle("CRUD de Equipamento");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(560, 420);
+        setSize(640, 440);
         setLocationRelativeTo(null);
         getContentPane().setLayout(null);
         getContentPane().setBackground(Color.WHITE);
@@ -101,8 +97,16 @@ public class EquipamentoGUI extends JFrame {
         getContentPane().add(lblSerial);
 
         txtSerial = new JTextField();
-        txtSerial.setBounds(220, 55, 300, 24);
+        txtSerial.setBounds(220, 55, 180, 24);
         getContentPane().add(txtSerial);
+
+        btnNovo = new JButton("Novo");
+        btnNovo.setBounds(410, 55, 90, 24);
+        getContentPane().add(btnNovo);
+
+        btnBuscar = new JButton("Buscar");
+        btnBuscar.setBounds(510, 55, 90, 24);
+        getContentPane().add(btnBuscar);
 
         JLabel lblDados = new JLabel("Dados:");
         lblDados.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -117,7 +121,7 @@ public class EquipamentoGUI extends JFrame {
         txtDescricao.setLineWrap(true);
         txtDescricao.setWrapStyleWord(true);
         JScrollPane spDesc = new JScrollPane(txtDescricao);
-        spDesc.setBounds(20, 132, 500, 70);
+        spDesc.setBounds(20, 132, 580, 70);
         getContentPane().add(spDesc);
 
         JLabel lblENovo = new JLabel("É novo?");
@@ -144,14 +148,14 @@ public class EquipamentoGUI extends JFrame {
         getContentPane().add(lblValor);
 
         txtValor = new JFormattedTextField();
-        txtValor.setBounds(330, 208, 190, 24);
+        txtValor.setBounds(330, 208, 270, 24);
         configurarCampoMonetario();
         getContentPane().add(txtValor);
 
         panelNotebook = new JPanel(null);
         panelNotebook.setBackground(Color.WHITE);
         panelNotebook.setBorder(new EmptyBorder(6, 6, 6, 6));
-        panelNotebook.setBounds(20, 242, 500, 48);
+        panelNotebook.setBounds(20, 242, 580, 48);
         panelNotebook.setBorder(BorderFactory.createTitledBorder("Notebook"));
 
         JLabel lblSens = new JLabel("Carrega dados sensíveis?");
@@ -177,7 +181,7 @@ public class EquipamentoGUI extends JFrame {
         panelDesktop = new JPanel(null);
         panelDesktop.setBackground(Color.WHITE);
         panelDesktop.setBorder(new EmptyBorder(6, 6, 6, 6));
-        panelDesktop.setBounds(20, 242, 500, 48);
+        panelDesktop.setBounds(20, 242, 580, 48);
         panelDesktop.setBorder(BorderFactory.createTitledBorder("Desktop"));
 
         JLabel lblServ = new JLabel("É Servidor?");
@@ -201,7 +205,6 @@ public class EquipamentoGUI extends JFrame {
         getContentPane().add(panelDesktop);
 
         alternarPaineisCondicionais("Notebook");
-
         cbTipo.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 alternarPaineisCondicionais((String) e.getItem());
@@ -210,208 +213,197 @@ public class EquipamentoGUI extends JFrame {
 
         Font btnFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 
-        JButton btnBuscar = new JButton("BUSCAR");
-        btnBuscar.setFont(btnFont);
-        btnBuscar.setBounds(20, 310, 110, 32);
-        getContentPane().add(btnBuscar);
-
-        JButton btnAdicionar = new JButton("ADICIONAR");
+        btnAdicionar = new JButton("Incluir");
         btnAdicionar.setFont(btnFont);
-        btnAdicionar.setBounds(135, 310, 120, 32);
+        btnAdicionar.setBounds(20, 310, 110, 32);
         getContentPane().add(btnAdicionar);
 
-        JButton btnExcluir = new JButton("EXCLUIR");
-        btnExcluir.setFont(btnFont);
-        btnExcluir.setBounds(260, 310, 110, 32);
-        getContentPane().add(btnExcluir);
-
-        JButton btnAlterar = new JButton("ALTERAR");
+        btnAlterar = new JButton("Alterar");
         btnAlterar.setFont(btnFont);
-        btnAlterar.setBounds(375, 310, 110, 32);
+        btnAlterar.setBounds(135, 310, 110, 32);
         getContentPane().add(btnAlterar);
 
-        btnAdicionar.addActionListener(e -> {
+        btnExcluir = new JButton("Excluir");
+        btnExcluir.setFont(btnFont);
+        btnExcluir.setBounds(250, 310, 110, 32);
+        getContentPane().add(btnExcluir);
 
-            String tipo = (String) cbTipo.getSelectedItem();
-            String serial = txtSerial.getText();
-            String descricao = txtDescricao.getText();
-            boolean eNovo = rbNovoSim.isSelected();
-            double valor = Double.valueOf(txtValor.getText().replace(".", "").replace(",", "."));
+        btnCancelar = new JButton("Cancelar");
+        btnCancelar.setFont(btnFont);
+        btnCancelar.setBounds(365, 310, 110, 32);
+        getContentPane().add(btnCancelar);
 
-            boolean carregaSens = rbSensSim.isSelected();
-            boolean eServidor = rbServSim.isSelected(); 
-            
-            EquipamentoMediator EMAdd = EquipamentoMediator.getInstancia();
-            
-            if(cbTipo.getSelectedIndex() == 0) {
-            	Notebook no = new Notebook(serial, descricao, eNovo, valor, carregaSens);
-            	ResultadoMediator addResultado = EMAdd.incluirNotebook(no);
-            	
-            	if(addResultado.isOperacaoRealizada() == false) {
-            		String erro = "Operação não realizada pois:";
-            		for(int i = 0; i < addResultado.getMensagensErro().listar().length; i++) {
-            			erro += "\n" + addResultado.getMensagensErro().listar()[i];
-            		}
-            		JOptionPane.showMessageDialog(this,erro,
-                            "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
-            	}
-            	else {
-            		JOptionPane.showMessageDialog(this,"Inclusão realizada com sucesso!",
-                            "Resultado da Inclusão", JOptionPane.INFORMATION_MESSAGE);
-            	}
+        btnLimpar = new JButton("Limpar");
+        btnLimpar.setFont(btnFont);
+        btnLimpar.setBounds(490, 310, 110, 32);
+        getContentPane().add(btnLimpar);
+
+        setModo(Modo.INICIAL);
+
+        btnNovo.addActionListener(e -> {
+            String serial = txtSerial.getText().trim();
+            if (serial.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Serial deve ser preenchido!");
+                return;
             }
-            else if(cbTipo.getSelectedIndex() == 1) {
-            	Desktop de = new Desktop(serial, descricao, eNovo, valor, eServidor);
-            	ResultadoMediator addResultado = EMAdd.incluirDesktop(de);
-            	if(addResultado.isOperacaoRealizada() == false) {
-            		String erro = "Operação não realizada pois:";
-            		for(int i = 0; i < addResultado.getMensagensErro().listar().length; i++) {
-            			erro += "\n" + addResultado.getMensagensErro().listar()[i];
-            		}
-            		JOptionPane.showMessageDialog(this,erro,
-                            "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
-            	}
-            	else {
-            		JOptionPane.showMessageDialog(this,"Inclusão realizada com sucesso!",
-                            "Resultado da Inclusão", JOptionPane.INFORMATION_MESSAGE);
-            	}
+            EquipamentoMediator med = EquipamentoMediator.getInstancia();
+            if (isNotebookSelecionado()) {
+                if (med.buscarNotebook("NO" + serial) != null) {
+                    JOptionPane.showMessageDialog(this, "Notebook já existente!");
+                    return;
+                }
+            } else {
+                if (med.buscarDesktop("DE" + serial) != null) {
+                    JOptionPane.showMessageDialog(this, "Desktop já existente!");
+                    return;
+                }
             }
+            setModo(Modo.NOVO);
         });
 
         btnBuscar.addActionListener(e -> {
-        	EquipamentoMediator EM = EquipamentoMediator.getInstancia();
-            if(cbTipo.getSelectedIndex() == 0) {
-            	Notebook notebook = EM.buscarNotebook("NO"+txtSerial.getText());
-            	if(notebook == null) {
-            		JOptionPane.showMessageDialog(this,"Notebook não encontrado",
-                            "Resultado da Busca", JOptionPane.INFORMATION_MESSAGE);
-            	}
-            	else {
-            		String msg = "\nSerial: " + notebook.getSerial()
-            			+ "\nDescrição: " + notebook.getDescricao()
-            			+ "\nÉ novo: " + (notebook.isEhNovo() ? "SIM" : "NÃO")
-            			+ "\nValor estimado: " + String.valueOf(notebook.getValorEstimado());
-            		JOptionPane.showMessageDialog(this,msg,
-                            "Resultado da Busca", JOptionPane.WARNING_MESSAGE);
-            	}
+            String serial = txtSerial.getText().trim();
+            if (serial.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Serial deve ser preenchido!");
+                return;
             }
-            else if(cbTipo.getSelectedIndex() == 1) {
-            	Desktop desktop = EM.buscarDesktop("DE"+txtSerial.getText());
-            	if(desktop == null) {
-            		JOptionPane.showMessageDialog(this,"Desktop não encontrado",
-                            "Resultado da Busca", JOptionPane.INFORMATION_MESSAGE);
-            	}
-            	else {
-            		String msg = "\nSerial: " + desktop.getSerial()
-        			+ "\nDescrição: " + desktop.getDescricao()
-        			+ "\nÉ novo: " + (desktop.isEhNovo() ? "SIM" : "NÃO")
-        			+ "\nValor estimado: " + String.valueOf(desktop.getValorEstimado());
-            		JOptionPane.showMessageDialog(this,msg,
-                            "Resultado da Busca", JOptionPane.WARNING_MESSAGE);
-            	}
-            }
-            else {
-            	JOptionPane.showMessageDialog(this,"Selecione uma das opções",
-                        "Erro", JOptionPane.WARNING_MESSAGE);
+            EquipamentoMediator med = EquipamentoMediator.getInstancia();
+            if (isNotebookSelecionado()) {
+                Notebook note = med.buscarNotebook("NO" + serial);
+                if (note == null) {
+                    JOptionPane.showMessageDialog(this, "Notebook não existente!");
+                    return;
+                }
+                preencherNotebook(note);
+                setModo(Modo.EDICAO);
+            } else {
+                Desktop desk = med.buscarDesktop("DE" + serial);
+                if (desk == null) {
+                    JOptionPane.showMessageDialog(this, "Desktop não existente!");
+                    return;
+                }
+                preencherDesktop(desk);
+                setModo(Modo.EDICAO);
             }
         });
 
-        btnExcluir.addActionListener(e -> {
-        	EquipamentoMediator EMExc = EquipamentoMediator.getInstancia();
-            if(cbTipo.getSelectedIndex() == 0) {
-            	ResultadoMediator excResultado = EMExc.excluirNotebook("NO"+txtSerial.getText());
-            	
-            	if(excResultado.isOperacaoRealizada() == false) {
-            		String erro = "Operação não realizada pois:";
-            		for(int i = 0; i < excResultado.getMensagensErro().listar().length; i++) {
-            			erro += "\n" + excResultado.getMensagensErro().listar()[i];
-            		}
-            		JOptionPane.showMessageDialog(this,erro,
-                            "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
-            	}
-            	else {
-            		JOptionPane.showMessageDialog(this,"Exclusão realizada com sucesso!",
-                            "Erro", JOptionPane.INFORMATION_MESSAGE);
-            	}
+        btnAdicionar.addActionListener(e -> {
+            String tipo = (String) cbTipo.getSelectedItem();
+            String serial = txtSerial.getText().trim();
+            String descricao = txtDescricao.getText().trim();
+            boolean eNovo = rbNovoSim.isSelected();
+            double valor;
+            try {
+                valor = Double.valueOf(txtValor.getText().replace(".", "").replace(",", "."));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Valor estimado inválido.");
+                return;
             }
-            else if(cbTipo.getSelectedIndex() == 1){
-            	ResultadoMediator excResultado = EMExc.excluirDesktop("DE"+txtSerial.getText());
-            	
-            	if(excResultado.isOperacaoRealizada() == false) {
-            		String erro = "Operação não realizada pois:";
-            		for(int i = 0; i < excResultado.getMensagensErro().listar().length; i++) {
-            			erro += "\n" + excResultado.getMensagensErro().listar()[i];
-            		}
-            		JOptionPane.showMessageDialog(this,erro,
-                            "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
-            	}
-            	else {
-            		JOptionPane.showMessageDialog(this,"Exclusão realizada com sucesso!",
-                            "Erro", JOptionPane.INFORMATION_MESSAGE);
-            	}
+
+            EquipamentoMediator med = EquipamentoMediator.getInstancia();
+            ResultadoMediator res;
+
+            if ("Notebook".equalsIgnoreCase(tipo)) {
+                boolean carregaSens = rbSensSim.isSelected();
+                Notebook no = new Notebook(serial, descricao, eNovo, valor, carregaSens);
+                res = med.incluirNotebook(no);
+            } else {
+                boolean eServidor = rbServSim.isSelected();
+                Desktop de = new Desktop(serial, descricao, eNovo, valor, eServidor);
+                res = med.incluirDesktop(de);
+            }
+
+            if (!res.isOperacaoRealizada()) {
+                StringBuilder sb = new StringBuilder("Operação não realizada pois:");
+                for (String m : res.getMensagensErro().listar()) sb.append("\n").append(m);
+                JOptionPane.showMessageDialog(this, sb.toString(), "Resultado da Inclusão", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Inclusão realizada com sucesso!", "Resultado da Inclusão", JOptionPane.INFORMATION_MESSAGE);
+                setModo(Modo.INICIAL);
             }
         });
 
         btnAlterar.addActionListener(e -> {
-
             String tipo = (String) cbTipo.getSelectedItem();
-            String serial = txtSerial.getText();
-            String descricao = txtDescricao.getText();
+            String serial = txtSerial.getText().trim();
+            String descricao = txtDescricao.getText().trim();
             boolean eNovo = rbNovoSim.isSelected();
-            double valor = Double.valueOf(txtValor.getText().replace(".", "").replace(",", "."));
-
-            boolean carregaSens = rbSensSim.isSelected();
-            boolean eServidor = rbServSim.isSelected(); 
-            
-            EquipamentoMediator EMAlt = EquipamentoMediator.getInstancia();
-            
-            if(cbTipo.getSelectedIndex() == 0) {
-            	Notebook no = new Notebook(serial, descricao, eNovo, valor, carregaSens);
-            	ResultadoMediator altResultado = EMAlt.alterarNotebook(no);
-            	
-            	if(altResultado.isOperacaoRealizada() == false) {
-            		String erro = "Operação não realizada pois:";
-            		for(int i = 0; i < altResultado.getMensagensErro().listar().length; i++) {
-            			erro += "\n" + altResultado.getMensagensErro().listar()[i];
-            		}
-            		JOptionPane.showMessageDialog(this,erro,
-                            "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
-            	}
-            	else {
-            		JOptionPane.showMessageDialog(this,"Alteração realizada com sucesso!",
-                            "Resultado da Alteração", JOptionPane.INFORMATION_MESSAGE);
-            	}
+            double valor;
+            try {
+                valor = Double.valueOf(txtValor.getText().replace(".", "").replace(",", "."));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Valor estimado inválido.");
+                return;
             }
-            else if(cbTipo.getSelectedIndex() == 1) {
-            	Desktop de = new Desktop(serial, descricao, eNovo, valor, eServidor);
-            	ResultadoMediator altResultado = EMAlt.incluirDesktop(de);
-            	if(altResultado.isOperacaoRealizada() == false) {
-            		String erro = "Operação não realizada pois:";
-            		for(int i = 0; i < altResultado.getMensagensErro().listar().length; i++) {
-            			erro += "\n" + altResultado.getMensagensErro().listar()[i];
-            		}
-            		JOptionPane.showMessageDialog(this,erro,
-                            "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
-            	}
-            	else {
-            		JOptionPane.showMessageDialog(this,"Alteração realizada com sucesso!",
-                            "Resultado da Alteração", JOptionPane.INFORMATION_MESSAGE);
-            	}
+
+            EquipamentoMediator med = EquipamentoMediator.getInstancia();
+            ResultadoMediator res;
+
+            if ("Notebook".equalsIgnoreCase(tipo)) {
+                boolean carregaSens = rbSensSim.isSelected();
+                Notebook no = new Notebook(serial, descricao, eNovo, valor, carregaSens);
+                res = med.alterarNotebook(no);
+            } else {
+                boolean eServidor = rbServSim.isSelected();
+                Desktop de = new Desktop(serial, descricao, eNovo, valor, eServidor);
+                res = med.alterarDesktop(de);
+            }
+
+            if (!res.isOperacaoRealizada()) {
+                StringBuilder sb = new StringBuilder("Operação não realizada pois:");
+                for (String m : res.getMensagensErro().listar()) sb.append("\n").append(m);
+                JOptionPane.showMessageDialog(this, sb.toString(), "Resultado da Alteração", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Alteração realizada com sucesso!", "Resultado da Alteração", JOptionPane.INFORMATION_MESSAGE);
+                setModo(Modo.INICIAL);
             }
         });
+
+        btnExcluir.addActionListener(e -> {
+            String serial = txtSerial.getText().trim();
+            if (serial.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Informe o Serial para excluir.", "Atenção", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            EquipamentoMediator med = EquipamentoMediator.getInstancia();
+            ResultadoMediator res;
+            if (isNotebookSelecionado()) {
+                res = med.excluirNotebook("NO" + serial);
+            } else {
+                res = med.excluirDesktop("DE" + serial);
+            }
+            if (!res.isOperacaoRealizada()) {
+                StringBuilder sb = new StringBuilder("Operação não realizada pois:");
+                for (String m : res.getMensagensErro().listar()) sb.append("\n").append(m);
+                JOptionPane.showMessageDialog(this, sb.toString(), "Resultado da Exclusão", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Exclusão realizada com sucesso!", "Resultado da Exclusão", JOptionPane.INFORMATION_MESSAGE);
+                setModo(Modo.INICIAL);
+            }
+        });
+
+        btnCancelar.addActionListener(e -> setModo(Modo.INICIAL));
+
+        btnLimpar.addActionListener(e -> {
+            if (txtSerial.isEnabled()) txtSerial.setText("");
+            txtDescricao.setText("");
+            txtValor.setText("0,00");
+            rbNovoNao.setSelected(true);
+            rbSensNao.setSelected(true);
+            rbServNao.setSelected(true);
+        });
     }
-    
+
+    private boolean isNotebookSelecionado() {
+        return cbTipo.getSelectedIndex() == 0;
+    }
 
     private void alternarPaineisCondicionais(String tipo) {
         boolean isNotebook = "Notebook".equalsIgnoreCase(tipo);
         panelNotebook.setVisible(isNotebook);
         panelDesktop.setVisible(!isNotebook);
-
-        if (isNotebook) {
-            rbServNao.setSelected(true);
-        } else {
-            rbSensNao.setSelected(true);
-        }
+        if (isNotebook) rbServNao.setSelected(true);
+        else rbSensNao.setSelected(true);
         panelNotebook.repaint();
         panelDesktop.repaint();
     }
@@ -430,5 +422,122 @@ public class EquipamentoGUI extends JFrame {
         txtValor.setFormatterFactory(new DefaultFormatterFactory(valorFormatter));
         txtValor.setFocusLostBehavior(JFormattedTextField.COMMIT);
         txtValor.setText("0,00");
+    }
+
+
+    private void setModo(Modo modo) {
+        switch (modo) {
+            case INICIAL:
+                cbTipo.setEnabled(true);
+                txtSerial.setEnabled(true);
+
+                txtDescricao.setEnabled(false);
+                rbNovoNao.setEnabled(false);
+                rbNovoSim.setEnabled(false);
+                txtValor.setEnabled(false);
+                rbSensNao.setEnabled(false);
+                rbSensSim.setEnabled(false);
+                rbServNao.setEnabled(false);
+                rbServSim.setEnabled(false);
+
+                btnNovo.setEnabled(true);
+                btnBuscar.setEnabled(true);
+                btnAdicionar.setEnabled(false);
+                btnAlterar.setEnabled(false);
+                btnExcluir.setEnabled(false);
+                btnCancelar.setEnabled(false);
+                btnLimpar.setEnabled(true);
+
+                txtSerial.setText("");
+                txtDescricao.setText("");
+                txtValor.setText("0,00");
+                rbNovoNao.setSelected(true);
+                rbSensNao.setSelected(true);
+                rbServNao.setSelected(true);
+                
+                alternarPaineisCondicionais((String) cbTipo.getSelectedItem());
+                break;
+
+            case NOVO:
+                cbTipo.setEnabled(false);
+                txtSerial.setEnabled(false);
+
+                txtDescricao.setEnabled(true);
+                rbNovoNao.setEnabled(true);
+                rbNovoSim.setEnabled(true);
+                txtValor.setEnabled(true);
+
+                if (isNotebookSelecionado()) {
+                    rbSensNao.setEnabled(true);
+                    rbSensSim.setEnabled(true);
+                    rbServNao.setEnabled(false);
+                    rbServSim.setEnabled(false);
+                } else {
+                    rbServNao.setEnabled(true);
+                    rbServSim.setEnabled(true);
+                    rbSensNao.setEnabled(false);
+                    rbSensSim.setEnabled(false);
+                }
+
+                btnNovo.setEnabled(false);
+                btnBuscar.setEnabled(false);
+                btnAdicionar.setEnabled(true);
+                btnAlterar.setEnabled(false);
+                btnExcluir.setEnabled(false);
+                btnCancelar.setEnabled(true);
+                btnLimpar.setEnabled(true);
+                break;
+
+            case EDICAO:
+                cbTipo.setEnabled(false);
+                txtSerial.setEnabled(false);
+
+                txtDescricao.setEnabled(true);
+                rbNovoNao.setEnabled(true);
+                rbNovoSim.setEnabled(true);
+                txtValor.setEnabled(true);
+
+                if (isNotebookSelecionado()) {
+                    rbSensNao.setEnabled(true);
+                    rbSensSim.setEnabled(true);
+                    rbServNao.setEnabled(false);
+                    rbServSim.setEnabled(false);
+                } else {
+                    rbServNao.setEnabled(true);
+                    rbServSim.setEnabled(true);
+                    rbSensNao.setEnabled(false);
+                    rbSensSim.setEnabled(false);
+                }
+
+                btnNovo.setEnabled(false);
+                btnBuscar.setEnabled(false);
+                btnAdicionar.setEnabled(false);
+                btnAlterar.setEnabled(true);
+                btnExcluir.setEnabled(true);
+                btnCancelar.setEnabled(true);
+                btnLimpar.setEnabled(true);
+                break;
+        }
+    }
+
+
+    private void preencherNotebook(Notebook n) {
+        cbTipo.setSelectedItem("Notebook");
+        txtSerial.setText(n.getSerial());
+        txtDescricao.setText(n.getDescricao());
+        if (n.isEhNovo()) rbNovoSim.setSelected(true); else rbNovoNao.setSelected(true);
+        txtValor.setText(String.format(new Locale("pt", "BR"), "%,.2f", n.getValorEstimado()));
+        if (n.isCarregaDadosSensiveis()) rbSensSim.setSelected(true); else rbSensNao.setSelected(true);
+        alternarPaineisCondicionais("Notebook");
+    }
+
+    private void preencherDesktop(Desktop d) {
+        cbTipo.setSelectedItem("Desktop");
+        txtSerial.setText(d.getSerial());
+        txtDescricao.setText(d.getDescricao());
+        if (d.isEhNovo()) rbNovoSim.setSelected(true); else rbNovoNao.setSelected(true);
+        txtValor.setText(String.format(new Locale("pt", "BR"), "%,.2f", d.getValorEstimado()));
+        if (d.isEhServidor()) rbServSim.setSelected(true); else rbServNao.setSelected(true);
+        alternarPaineisCondicionais("Desktop");
     }
 }
