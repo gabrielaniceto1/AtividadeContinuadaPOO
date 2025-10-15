@@ -1,4 +1,4 @@
-package br.edu.cs.poo.ac.ordem.gui;
+package br.edu.cs.poo.ac.ordem.telas;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -32,8 +32,8 @@ import br.edu.cs.poo.ac.ordem.entidades.Notebook;
 import br.edu.cs.poo.ac.ordem.mediators.EquipamentoMediator;
 import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
 
-//tela opicional
-public class EquipamentoGUI extends JFrame {
+
+public class TelaEquipamento extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +62,7 @@ public class EquipamentoGUI extends JFrame {
         EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                EquipamentoGUI frame = new EquipamentoGUI();
+                TelaEquipamento frame = new TelaEquipamento();
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -70,7 +70,7 @@ public class EquipamentoGUI extends JFrame {
         });
     }
 
-    public EquipamentoGUI() {
+    public TelaEquipamento() {
         setTitle("CRUD de Equipamento");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(640, 440);

@@ -1,4 +1,4 @@
-package br.edu.cs.poo.ac.ordem.gui;
+package br.edu.cs.poo.ac.ordem.telas;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -27,7 +27,7 @@ import br.edu.cs.poo.ac.ordem.mediators.ResultadoMediator;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-public class ClienteGUI extends JFrame {
+public class TelaCliente extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,7 +51,7 @@ public class ClienteGUI extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
-				ClienteGUI frame = new ClienteGUI();
+				TelaCliente frame = new TelaCliente();
 				frame.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -62,7 +62,7 @@ public class ClienteGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ClienteGUI() {
+	public TelaCliente() {
 		if (!Beans.isDesignTime()) {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

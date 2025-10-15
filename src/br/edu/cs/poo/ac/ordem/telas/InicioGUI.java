@@ -1,4 +1,4 @@
-package br.edu.cs.poo.ac.ordem.gui;
+package br.edu.cs.poo.ac.ordem.telas;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -88,13 +88,13 @@ public class InicioGUI extends JFrame {
         getContentPane().add(footer, BorderLayout.SOUTH);
 
         btnCliente.addActionListener(e -> {
-            ClienteGUI telaCliente = new ClienteGUI();
+            TelaCliente telaCliente = new TelaCliente();
             telaCliente.setVisible(true);
             dispose();
         });
 
         btnEquip.addActionListener(e -> {
-            EquipamentoGUI telaEquipamento = new EquipamentoGUI();
+            TelaEquipamento telaEquipamento = new TelaEquipamento();
             telaEquipamento.setVisible(true);
             dispose();
         });
