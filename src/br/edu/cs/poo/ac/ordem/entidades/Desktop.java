@@ -13,10 +13,17 @@ public class Desktop extends Equipamento{
 		super(serial, descricao, ehNovo, valorEstimado);
 		this.ehServidor = ehServidor;
 	}
+	
 	public String getIdTipo() {
 		return "DE";
 	}
+	
 	public String concat() {
+		return getIdTipo() + getSerial();
+	}
+	
+	@Override
+	public String getId() {
 		return getIdTipo() + getSerial();
 	}
 }

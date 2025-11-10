@@ -23,5 +23,9 @@ public class Notebook extends Equipamento{
 		String concat = getIdTipo() + getSerial();
 		return concat;
 	}
-
+	
+	@Override
+	public String getId() {
+		return getIdTipo() + getSerial();
+	}
 }

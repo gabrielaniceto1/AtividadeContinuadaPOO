@@ -7,14 +7,17 @@ import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
+import br.edu.cs.poo.ac.utils.Registro;
+
 @Getter @Setter
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Equipamento implements Serializable{
+public abstract class Equipamento implements Registro{
 	private String serial;
 	private String descricao;
 	private boolean ehNovo;
 	private double valorEstimado;
 	
+	public abstract String getIdTipo();
 }

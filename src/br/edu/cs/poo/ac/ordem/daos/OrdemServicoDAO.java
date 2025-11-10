@@ -1,50 +1,36 @@
 package br.edu.cs.poo.ac.ordem.daos;
 import java.io.Serializable;
+
 import br.edu.cs.poo.ac.ordem.entidades.OrdemServico;
+import br.edu.cs.poo.ac.utils.Registro;
 
 //O identificador único, por objeto, de OrdemServico é o número.   
 public class OrdemServicoDAO extends DAOGenerico{
-	public OrdemServicoDAO() {
-		super(OrdemServico.class);
-	}
-	public OrdemServico buscar(String numero) {
-		return (OrdemServico)cadastroObjetos.buscar(numero);		
-	}
-	public boolean incluir(OrdemServico ordemServico) {
-		if (buscar(ordemServico.getNumero()) == null) {
-			cadastroObjetos.incluir(ordemServico, ordemServico.getNumero());
-			return true;
-		} else {
-			return false;
-		}
-	}
-	public boolean alterar(OrdemServico ordemServico) {
-		if (buscar(ordemServico.getNumero()) != null) {
-			cadastroObjetos.alterar(ordemServico, ordemServico.getNumero());
-			return true;
-		} else {
-			return false;
-		}
-	}
-	public boolean excluir(String numero) {
-		if (buscar(numero) != null) {
-			cadastroObjetos.excluir(numero);
-			return true;
-		} else {
-			return false;
-		}
-	}	
-	public OrdemServico[] buscarTodos() {
-		Serializable[] ret = cadastroObjetos.buscarTodos();
-		OrdemServico[] retorno;
-		if (ret != null && ret.length > 0) {
-			retorno = new OrdemServico[ret.length];
-			for (int i=0; i<ret.length; i++) {
-				retorno[i] = (OrdemServico)ret[i];
-			}
-		} else {
-			retorno = new OrdemServico[0]; 
-		}
-		return retorno;
-	}
+	@Override
+    public Class<?> getClasseEntidade() {
+        return OrdemServico.class;
+    }
+
+    public OrdemServico buscar(String id) {
+        return (OrdemServico) super.buscar(id);
+    }
+
+    public boolean incluir(OrdemServico entidade) {
+        return super.incluir(entidade);
+    }
+
+    public boolean alterar(OrdemServico entidade) {
+        return super.alterar(entidade);
+    }
+
+    public boolean excluir(String id) {
+        return super.excluir(id);
+    }
+
+    public OrdemServico[] buscarTodos() {
+        Registro[] rs = super.buscarTodos();
+        OrdemServico[] out = new OrdemServico[rs.length];
+        for (int i = 0; i < rs.length; i++) out[i] = (OrdemServico) rs[i];
+        return out;
+    }
 }
