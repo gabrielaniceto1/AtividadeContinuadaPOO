@@ -11,31 +11,46 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Getter @Setter
-@AllArgsConstructor
 
 public class OrdemServico implements Registro{
+	
 	private Cliente cliente;
+	
 	private PrecoBase precoBase;
-	private Notebook notebook;
-	private Desktop desktop;
+	
+	private Equipamento equipamento;
+	
+//	private Notebook notebook;
+//	private Desktop desktop;
+	
 	private LocalDateTime dataHoraAbertura = LocalDateTime.now();
+	
 	private int prazoEmDias;
+	
 	private double valor;
 	
+	private FechamentoOrdemServico dadosFechamento;
+	private LocalDateTime dataHoraCancelamento;
+	private String motivoCancelamento;
+	private StatusOrdem status;
+	private String vendedor;
+	
+	public OrdemServico(Cliente cliente, PrecoBase precoBase, Equipamento equipamento, LocalDateTime dataHoraAbertura, int prazoEmDias, double valor) {
+		this.cliente = cliente;
+		this.precoBase = precoBase;
+		this.equipamento = equipamento;
+		this.dataHoraAbertura = dataHoraAbertura;
+		this.prazoEmDias = prazoEmDias;
+		this.valor = valor;
+	}
 	public LocalDate getDataEstimadaEntrega() {
 		LocalDate dataHora = dataHoraAbertura.toLocalDate();
 		return dataHora.plusDays(prazoEmDias);
 	}
 	public String getNumero() {
 		
-		String id = null;
+		String id = equipamento.getIdTipo();
 		
-		if(notebook != null) {
-			id = notebook.getIdTipo();
-		}
-		else {
-			id = desktop.getIdTipo();
-		}
 		String numeros = cliente.getCpfCnpj().replace(".", "").replace("-", "");
 		
 		String data = dataHoraAbertura.toLocalDate().toString();
