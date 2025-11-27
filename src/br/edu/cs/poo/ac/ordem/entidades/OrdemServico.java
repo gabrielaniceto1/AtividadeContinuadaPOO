@@ -20,8 +20,8 @@ public class OrdemServico implements Registro{
 	
 	private Equipamento equipamento;
 	
-//	private Notebook notebook;
-//	private Desktop desktop;
+	private Notebook notebook;
+	private Desktop desktop;
 	
 	private LocalDateTime dataHoraAbertura = LocalDateTime.now();
 	

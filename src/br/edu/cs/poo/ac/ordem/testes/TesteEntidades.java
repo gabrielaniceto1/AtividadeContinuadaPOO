@@ -42,22 +42,22 @@ public class TesteEntidades extends TesteAbstrato {
 	@Test
 	public void testeNumeroOrdemServicoCNPJ() {
 		OrdemServico ordem = new OrdemServico(CLI2, PrecoBase.MANUTENCAO_NORMAL, 
-				NOTE, null, DATA_HORA1, 12, 500.0);
+				NOTE, DATA_HORA1, 12, 500.0);
 		String numero = ordem.getNumero();
 		Assertions.assertEquals("NO20200201102023456789011234", numero);
 		ordem = new OrdemServico(CLI2, PrecoBase.MANUTENCAO_NORMAL, 
-				null, DESK, DATA_HORA1, 14, 900.0);
+				DESK, DATA_HORA1, 14, 900.0);
 		numero = ordem.getNumero();
 		Assertions.assertEquals("DE20200201102023456789011234", numero);
 	}
 	@Test
 	public void testeNumeroOrdemServicoCPF() {
 		OrdemServico ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
-				NOTE, null, DATA_HORA1, 10, 300.0);
+				NOTE, DATA_HORA1, 10, 300.0);
 		String numero = ordem.getNumero();
 		Assertions.assertEquals("NO20200201102000012345678900", numero);
 		ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
-				null, DESK, DATA_HORA1, 13, 700.0);
+				DESK, DATA_HORA1, 13, 700.0);
 		numero = ordem.getNumero();
 		Assertions.assertEquals("DE20200201102000012345678900", numero);
 	}
@@ -65,7 +65,7 @@ public class TesteEntidades extends TesteAbstrato {
 	@Test
 	public void testeDataEstimadaEntregaOrdemServico() {
 		OrdemServico ordem = new OrdemServico(CLI1, PrecoBase.MANUTENCAO_NORMAL, 
-				NOTE, null, DATA_HORA1, 5, 100.0);
+				NOTE, DATA_HORA1, 5, 100.0);
 		LocalDate dataEstimada = ordem.getDataEstimadaEntrega();
 		dataEstimada.equals(LocalDate.parse("2000-02-06"));
 	}
